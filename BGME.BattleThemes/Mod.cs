@@ -43,6 +43,19 @@ public class Mod : ModBase, IExports
         try
         {
             this.game = this.GetGame();
+
+            if (game == Game.P5R_PC && this.configuration.BaseBgmId_P5R == 12000)
+            {
+                this.configuration.BaseBgmId_P5R = 4000;
+                Log.Information("P5R: Base BGM ID updated from 12000 to 4000.");
+            }
+
+            else if (game == Game.P4G_PC && this.configuration.BaseBgmId_P4G == 693)
+            {
+                this.configuration.BaseBgmId_P4G = 4000;
+                Log.Information("P4G: Base BGM ID updated from 693 to 4000.");
+            }
+
             var baseDir = modLoader.GetDirectoryForModId(this.modConfig.ModId);
             var musicRegistry = new MusicRegistry(this.game, this.configuration, baseDir, this.modLoader.GetAppConfig().EnabledMods);
             this.battleThemesService = new(this.modLoader, bgme!, musicRegistry);

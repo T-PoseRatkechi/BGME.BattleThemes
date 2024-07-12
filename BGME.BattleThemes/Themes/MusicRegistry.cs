@@ -8,7 +8,7 @@ namespace BGME.BattleThemes.Themes;
 
 internal class MusicRegistry
 {
-    private const int CURRENT_VERSION = 1;
+    private const int CURRENT_VERSION = 2;
 
     private readonly Game game;
     private readonly Configuration.Config config;
@@ -37,7 +37,7 @@ internal class MusicRegistry
 
         this.encoders[Game.P4G_PC] = new CachedEncoder(new VgAudioEncoder(new() { OutContainerFormat = "hca" }), cachedDir.FullName);
         this.encoders[Game.P3P_PC] = new CachedEncoder(new VgAudioEncoder(new() { OutContainerFormat = "adx" }), cachedDir.FullName);
-        this.encoders[Game.P5R_PC] = new CachedEncoder(new VgAudioEncoder(new() { OutContainerFormat = "adx", KeyCode = 9923540143823782 }), cachedDir.FullName);
+        this.encoders[Game.P5R_PC] = new CachedEncoder(new VgAudioEncoder(new() { OutContainerFormat = "hca", KeyCode = 9923540143823782 }), cachedDir.FullName);
         this.encoders[Game.P3R_PC] = new CachedEncoder(new VgAudioEncoder(new() { OutContainerFormat = "hca", KeyCode = 11918920 }), cachedDir.FullName);
         this.supportedExts = this.encoders.First().Value.InputTypes;
 
@@ -128,7 +128,7 @@ internal class MusicRegistry
     private async Task RegisterSong(ModSong song)
     {
         // Don't rebuild songs that haven't changed.
-        if (this.previousMusic.Contains(song))
+        if (this.previousMusic.Contains(song) && File.Exists(song.BuildFilePath))
         {
             Log.Debug($"Song already built: {song.Name}");
             return;
@@ -221,8 +221,8 @@ internal class MusicRegistry
     private string GetReplacementPath(int bgmId) => this.game switch
     {
         Game.P3P_PC => Path.Join("P5REssentials/CPK/Battle Themes/data/sound/bgm", $"{bgmId}.adx"),
-        Game.P4G_PC => Path.Join("FEmulator/AWB/snd00_bgm.awb", $"{bgmId}.hca"),
-        Game.P5R_PC => Path.Join("FEmulator/AWB/BGM_42.AWB", $"{bgmId - 10000}.adx"),
+        Game.P4G_PC => Path.Join("BGME/P4G", $"{bgmId}.hca"),
+        Game.P5R_PC => Path.Join("BGME/P5R", $"{bgmId}.hca"),
         Game.P3R_PC => Path.Join("BGME/P3R", $"{bgmId}.hca"),
         _ => throw new Exception("Unknown game."),
     };

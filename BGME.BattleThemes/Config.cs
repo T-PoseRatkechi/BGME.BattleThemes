@@ -31,13 +31,13 @@ namespace BGME.BattleThemes.Configuration
 
         [DisplayName("Persona 5 Royal")]
         [Category("Base BGM ID")]
-        [DefaultValue(12000)]
-        public int BaseBgmId_P5R { get; set; } = 12000;
+        [DefaultValue(4000)]
+        public int BaseBgmId_P5R { get; set; } = 4000;
 
         [DisplayName("Persona 4 Golden")]
         [Category("Base BGM ID")]
-        [DefaultValue(693)]
-        public int BaseBgmId_P4G { get; set; } = 693;
+        [DefaultValue(4000)]
+        public int BaseBgmId_P4G { get; set; } = 4000;
 
         [DisplayName("Persona 3 Portable")]
         [Category("Base BGM ID")]
