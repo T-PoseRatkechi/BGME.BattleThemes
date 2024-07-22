@@ -8,7 +8,7 @@ namespace BGME.BattleThemes.Themes;
 
 internal class MusicRegistry
 {
-    private const int CURRENT_VERSION = 2;
+    private const int CURRENT_VERSION = 1;
 
     private readonly Game game;
     private readonly Configuration.Config config;
@@ -36,7 +36,7 @@ internal class MusicRegistry
         cachedDir.Create();
 
         this.encoders[Game.P4G_PC] = new CachedEncoder(new VgAudioEncoder(new() { OutContainerFormat = "hca" }), cachedDir.FullName);
-        this.encoders[Game.P3P_PC] = new CachedEncoder(new VgAudioEncoder(new() { OutContainerFormat = "adx" }), cachedDir.FullName);
+        this.encoders[Game.P3P_PC] = new CachedEncoder(new VgAudioEncoder(new() { OutContainerFormat = "hca" }), cachedDir.FullName);
         this.encoders[Game.P5R_PC] = new CachedEncoder(new VgAudioEncoder(new() { OutContainerFormat = "hca", KeyCode = 9923540143823782 }), cachedDir.FullName);
         this.encoders[Game.P3R_PC] = new CachedEncoder(new VgAudioEncoder(new() { OutContainerFormat = "hca", KeyCode = 11918920 }), cachedDir.FullName);
         this.supportedExts = this.encoders.First().Value.InputTypes;
@@ -188,6 +188,13 @@ internal class MusicRegistry
             }
         }
 
+        // Remove built files.
+        var music = this.GetPreviousMusic();
+        foreach (var song in music)
+        {
+            File.Delete(song.BuildFilePath);
+        }
+
         var musicFile = Path.Join(this.gameFolder, "music.json");
         File.Delete(musicFile);
         Log.Debug($"Cleared music file: {musicFile}");
@@ -220,10 +227,10 @@ internal class MusicRegistry
 
     private string GetReplacementPath(int bgmId) => this.game switch
     {
-        Game.P3P_PC => Path.Join("P5REssentials/CPK/Battle Themes/data/sound/bgm", $"{bgmId}.adx"),
-        Game.P4G_PC => Path.Join("BGME/P4G", $"{bgmId}.hca"),
-        Game.P5R_PC => Path.Join("BGME/P5R", $"{bgmId}.hca"),
-        Game.P3R_PC => Path.Join("BGME/P3R", $"{bgmId}.hca"),
+        Game.P3P_PC => Path.Join("BGME", "P3P", $"{bgmId}.hca"),
+        Game.P4G_PC => Path.Join("BGME", "P4G", $"{bgmId}.hca"),
+        Game.P5R_PC => Path.Join("BGME", "P5R", $"{bgmId}.hca"),
+        Game.P3R_PC => Path.Join("BGME", "P3R", $"{bgmId}.hca"),
         _ => throw new Exception("Unknown game."),
     };
 
