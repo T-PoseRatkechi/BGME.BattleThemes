@@ -1,4 +1,5 @@
 ﻿using BGME.BattleThemes.Utils;
+using BGME.Framework.Interfaces;
 using PersonaModdingMetadata.Shared.Games;
 using Phos.MusicManager.Library.Audio.Encoders;
 using Phos.MusicManager.Library.Audio.Encoders.VgAudio;
@@ -15,24 +16,27 @@ internal class MusicRegistry
     private readonly HashSet<ModSong> previousMusic;
     private readonly HashSet<ModSong> currentMusic = new();
     private readonly string[] supportedExts;
-    private readonly string modDir;
-    private readonly string gameDir;
     private readonly string[] enabledMods;
     private readonly IEncoder encoder;
 
+    private readonly string modDir;
+    private readonly string modGameDir;
+
     public MusicRegistry(
         Game game,
+        IBgmeApi bgme,
         Configuration.Config config,
         string modDir,
         string[] enabledMods)
     {
         this.game = game;
         this.config = config;
-        this.modDir = modDir;
         this.enabledMods = enabledMods;
 
-        this.gameDir = Path.Join(modDir, game.ToString());
-        this.encoder = GetEncoder(game, this.gameDir);
+        this.modDir = modDir;
+        this.modGameDir = Path.Join(modDir, game.ToString());
+
+        this.encoder = GetEncoder();
         this.supportedExts = this.encoder.InputTypes;
 
         // Rebuild all music on new versions.
@@ -43,6 +47,8 @@ internal class MusicRegistry
 
         this.previousMusic = this.GetPreviousMusic();
         this.RegisterMusic();
+
+        bgme.BgmeModLoading?.Invoke(new("BGME.BattleThemes", this.modGameDir));
     }
 
     /// <summary>
@@ -105,7 +111,7 @@ internal class MusicRegistry
             .Select(file =>
             {
                 var bgmId = this.GetNextBgmId();
-                var buildFile = Path.Join(this.modDir, "build", this.GetReplacementPath(bgmId));
+                var buildFile = Path.Join(this.modGameDir, this.GetReplacementPath(bgmId));
                 var song = new ModSong(modId, Path.GetFileNameWithoutExtension(file), bgmId, file, buildFile);
                 this.currentMusic.Add(song);
                 return song;
@@ -141,16 +147,16 @@ internal class MusicRegistry
 
     private void SaveCurrentMusic()
     {
-        var musicFileList = Path.Join(this.gameDir, "music.json");
+        var musicFileList = Path.Join(this.modGameDir, "music.json");
         File.WriteAllText(musicFileList, JsonSerializer.Serialize(this.currentMusic, new JsonSerializerOptions { WriteIndented = true }));
 
-        var versionFile = Path.Join(this.gameDir, "version.txt");
+        var versionFile = Path.Join(this.modGameDir, "version.txt");
         File.WriteAllText(versionFile, CURRENT_VERSION.ToString());
     }
 
     private HashSet<ModSong> GetPreviousMusic()
     {
-        var musicFileList = Path.Join(this.gameDir, "music.json");
+        var musicFileList = Path.Join(this.modGameDir, "music.json");
         if (File.Exists(musicFileList))
         {
             try
@@ -170,7 +176,7 @@ internal class MusicRegistry
     {
         Log.Information("New version, rebuilding all music.");
 
-        var cachedFolder = Path.Join(this.gameDir, "cached");
+        var cachedFolder = Path.Join(this.modGameDir, "cached");
         if (Directory.Exists(cachedFolder))
         {
             foreach (var file in Directory.EnumerateFiles(cachedFolder, $"*{this.encoder.EncodedExt}"))
@@ -187,14 +193,14 @@ internal class MusicRegistry
             File.Delete(song.BuildFilePath);
         }
 
-        var musicFile = Path.Join(this.gameDir, "music.json");
+        var musicFile = Path.Join(this.modGameDir, "music.json");
         File.Delete(musicFile);
         Log.Debug($"Cleared music file: {musicFile}");
     }
 
     private bool IsNewVersion()
     {
-        var versionFile = Path.Join(this.gameDir, "version.txt");
+        var versionFile = Path.Join(this.modGameDir, "version.txt");
         if (!File.Exists(versionFile))
         {
             return true;
@@ -237,15 +243,14 @@ internal class MusicRegistry
         _ => throw new Exception("Unknown game."),
     };
 
-    private static IEncoder GetEncoder(Game game, string gameDir)
+    private IEncoder GetEncoder()
     {
-        var cachedDir = Path.Join(gameDir, "cached");
-        Directory.CreateDirectory(cachedDir);
+        var cachedDir = Directory.CreateDirectory(Path.Join(this.modGameDir, "cached")).FullName;
 
         return game switch
         {
-            Game.P4G_PC => new CachedEncoder(new VgAudioEncoder(new() { OutContainerFormat = "hca" }), cachedDir),
-            Game.P3P_PC => new CachedEncoder(new VgAudioEncoder(new() { OutContainerFormat = "hca" }), cachedDir),
+            Game.P4G_PC => new CachedEncoder(new VgAudioEncoder(new() { OutContainerFormat = "hca" }), Directory.CreateDirectory(Path.Join(this.modDir, "P4G_P3P_cache")).FullName),
+            Game.P3P_PC => new CachedEncoder(new VgAudioEncoder(new() { OutContainerFormat = "hca" }), Directory.CreateDirectory(Path.Join(this.modDir, "P4G_P3P_cache")).FullName),
             Game.P5R_PC => new CachedEncoder(new VgAudioEncoder(new() { OutContainerFormat = "hca", KeyCode = 9923540143823782 }), cachedDir),
             Game.P3R_PC => new CachedEncoder(new VgAudioEncoder(new() { OutContainerFormat = "hca", KeyCode = 11918920 }), cachedDir),
             _ => throw new Exception("Unknown game."),
