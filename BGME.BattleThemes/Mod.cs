@@ -56,10 +56,13 @@ public class Mod : ModBase, IExports
                 Log.Information("P4G: Base BGM ID updated from 693 to 4000.");
             }
 
-            var baseDir = modLoader.GetDirectoryForModId(this.modConfig.ModId);
-            var musicRegistry = new MusicRegistry(this.game, this.configuration, baseDir, this.modLoader.GetAppConfig().EnabledMods);
+            var modDir = modLoader.GetDirectoryForModId(this.modConfig.ModId);
+            var musicRegistry = new MusicRegistry(this.game, this.configuration, modDir, this.modLoader.GetAppConfig().EnabledMods);
             this.battleThemesService = new(this.modLoader, bgme!, musicRegistry);
             this.modLoader.AddOrReplaceController<IBattleThemesApi>(this.owner, this.battleThemesService);
+
+            var buildDir = Path.Join(modDir, "build");
+            bgme!.BgmeModLoading?.Invoke(new(this.modConfig.ModId, buildDir));
         }
         catch (Exception ex)
         {
