@@ -106,14 +106,16 @@ internal class BattleThemesService : IBattleThemesApi
 
         if (this.themes.Count == 0)
         {
-            return;
+            musicScriptBuilder.AppendLine(string.Empty);
         }
-
-        musicScriptBuilder.AppendLine($"const allThemes = [{string.Join(',', this.themes)}]");
-        musicScriptBuilder.AppendLine($"const randomizedThemes = random_music(allThemes)");
-        musicScriptBuilder.AppendLine("encounter[\"Normal Battles\"]:");
-        musicScriptBuilder.AppendLine("  music = randomizedThemes");
-        musicScriptBuilder.AppendLine("end");
+        else
+        {
+            musicScriptBuilder.AppendLine($"const allThemes = [{string.Join(',', this.themes)}]");
+            musicScriptBuilder.AppendLine($"const randomizedThemes = random_music(allThemes)");
+            musicScriptBuilder.AppendLine("encounter[\"Normal Battles\"]:");
+            musicScriptBuilder.AppendLine("  music = randomizedThemes");
+            musicScriptBuilder.AppendLine("end");
+        }
 
         var musicScript = this.musicScriptBuilder.ToString();
         string newCallback() => musicScript;
