@@ -2,7 +2,7 @@
   "ModId": "BGME.BattleThemes",
   "ModName": "BGME Battle Themes",
   "ModAuthor": "zutomayofan50",
-  "ModVersion": "1.1.3",
+  "ModVersion": "1.3.0",
   "ModDescription": "Allows multiple mods to add battle themes which will randomly play. Battle themes automatically support P5R, P4G, P3R, and P3P.",
   "ModDll": "BGME.BattleThemes.dll",
   "ModIcon": "Preview.png",

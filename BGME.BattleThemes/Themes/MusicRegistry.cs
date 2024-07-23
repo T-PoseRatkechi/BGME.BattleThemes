@@ -9,7 +9,7 @@ namespace BGME.BattleThemes.Themes;
 
 internal class MusicRegistry
 {
-    private const int CURRENT_VERSION = 1;
+    private const int CURRENT_VERSION = 2;
 
     private readonly Game game;
     private readonly Configuration.Config config;
