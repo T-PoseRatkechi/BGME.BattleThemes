@@ -190,7 +190,10 @@ internal class MusicRegistry
         var music = this.GetPreviousMusic();
         foreach (var song in music)
         {
-            File.Delete(song.BuildFilePath);
+            if (File.Exists(song.BuildFilePath))
+            {
+                File.Delete(song.BuildFilePath);
+            }
         }
 
         var musicFile = Path.Join(this.modGameDir, "music.json");
