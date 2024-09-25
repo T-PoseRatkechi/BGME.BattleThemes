@@ -48,6 +48,11 @@ namespace BGME.BattleThemes.Configuration
         [Category("Base BGM ID")]
         [DefaultValue(4000)]
         public int BaseBgmId_P3R { get; set; } = 4000;
+
+        [DisplayName("Metaphor: ReFantazio")]
+        [Category("Base BGM ID")]
+        [DefaultValue(4000)]
+        public int BaseBgmId_Meta { get; set; } = 4000;
     }
 
     /// <summary>

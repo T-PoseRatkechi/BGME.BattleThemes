@@ -2,8 +2,8 @@
   "ModId": "BGME.BattleThemes",
   "ModName": "BGME Battle Themes",
   "ModAuthor": "zutomayofan50",
-  "ModVersion": "2.0.0",
-  "ModDescription": "Allows multiple mods to add battle themes which will randomly play. Battle themes automatically support P5R, P4G, P3R, and P3P.",
+  "ModVersion": "2.1.0",
+  "ModDescription": "Allows multiple mods to add battle themes which will randomly play. Battle themes automatically support Metaphor, P5R, P4G, P3R, and P3P.",
   "ModDll": "BGME.BattleThemes.dll",
   "ModIcon": "Preview.png",
   "ModR2RManagedDll32": "x86/BGME.BattleThemes.dll",
@@ -55,7 +55,8 @@
     "p3p.exe",
     "p3r.exe",
     "p4g.exe",
-    "p5r.exe"
+    "p5r.exe",
+    "metaphor.exe"
   ],
   "ProjectUrl": ""
 }

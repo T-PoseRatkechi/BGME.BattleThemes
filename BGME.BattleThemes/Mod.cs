@@ -81,6 +81,8 @@ public class Mod : ModBase, IExports
             return Game.P4G_PC;
         else if (appId.Contains("p3p"))
             return Game.P3P_PC;
+        else if (appId.Contains("metaphor"))
+            return Game.Metaphor;
 
         throw new Exception($"Unknown game: {appId}");
     }

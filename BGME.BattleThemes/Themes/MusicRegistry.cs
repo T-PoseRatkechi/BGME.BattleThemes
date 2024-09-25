@@ -232,6 +232,7 @@ internal class MusicRegistry
         Game.P4G_PC => Path.Join("BGME", "P4G", $"{bgmId}.hca"),
         Game.P5R_PC => Path.Join("BGME", "P5R", $"{bgmId}.hca"),
         Game.P3R_PC => Path.Join("BGME", "P3R", $"{bgmId}.hca"),
+        Game.Metaphor => Path.Join("BGME", "Metaphor", $"{bgmId}.hca"),
         _ => throw new Exception("Unknown game."),
     };
 
@@ -243,6 +244,7 @@ internal class MusicRegistry
         Game.P4G_PC => this.config.BaseBgmId_P4G,
         Game.P5R_PC => this.config.BaseBgmId_P5R,
         Game.P3R_PC => this.config.BaseBgmId_P3R,
+        Game.Metaphor => this.config.BaseBgmId_Meta,
         _ => throw new Exception("Unknown game."),
     };
 
@@ -256,6 +258,7 @@ internal class MusicRegistry
             Game.P3P_PC => new CachedEncoder(new VgAudioEncoder(new() { OutContainerFormat = "hca" }), Directory.CreateDirectory(Path.Join(this.modDir, "P4G_P3P_cache")).FullName),
             Game.P5R_PC => new CachedEncoder(new VgAudioEncoder(new() { OutContainerFormat = "hca", KeyCode = 9923540143823782 }), cachedDir),
             Game.P3R_PC => new CachedEncoder(new VgAudioEncoder(new() { OutContainerFormat = "hca", KeyCode = 11918920 }), cachedDir),
+            Game.Metaphor => new CachedEncoder(new VgAudioEncoder(new() { OutContainerFormat = "hca", KeyCode = 572184256205070254 }), cachedDir),
             _ => throw new Exception("Unknown game."),
         };
     }
